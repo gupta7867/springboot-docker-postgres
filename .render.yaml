@@ -4,7 +4,7 @@ services:
     env: java
     plan: free
     buildCommand: "mvn clean package -DskipTests"
-    startCommand: "java -jar target/WebwithPostgresql-0.0.1-SNAPSHOT.jar"
+    startCommand: "java -jar target/$(ls target | grep '.jar$' | head -n 1)"
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:postgresql://dpg-d2502b2dbo4c73a60ebg-a:5432/studentdb_2njf
