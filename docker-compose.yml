@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: student_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: shiv
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - spring-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - spring-net
+
+  app:
+    build: .
+    container_name: student_app
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/studentdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: shiv
+    networks:
+      - spring-net
+
+networks:
+  spring-net:
+    driver: bridge
+
+volumes:
+  pgdata:
